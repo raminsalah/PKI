@@ -1,0 +1,28 @@
+# Never commit private keys
+**/private/
+**/private/*
+*.key
+*.key.pem
+
+# Usually generated PKI state/artifacts
+**/newcerts/
+**/crl/
+**/*.crl
+**/index.txt
+**/index.txt.*
+**/serial
+**/serial.old
+**/crlnumber
+**/crlnumber.old
+
+# Usually generated CSRs
+**/csr/*.pem
+**/csr/*.csr
+
+# Keep cert dirs, but ignore generated cert PEMs by default
+**/certs/*.pem
+
+# Editor junk
+*.swp
+*~
+.DS_Store
