@@ -2,30 +2,30 @@
 default_ca = CA_default
 
 [ CA_default ]
-dir               = /home/ramin/Projects/PKI/root-ca
+dir               = /home/ramin/Projects/PKI/intermediate-ca
 certs             = $dir/certs
 crl_dir           = $dir/crl
 new_certs_dir     = $dir/newcerts
 database          = $dir/index.txt
 serial            = $dir/serial
-private_key       = $dir/private/root-ca.key.pem
-certificate       = $dir/certs/root-ca.cert.pem
 crlnumber         = $dir/crlnumber
-crl               = $dir/crl/root-ca.crl.pem
+certificate       = $dir/certs/intermediate-ca.cert.pem
+private_key       = $dir/private/intermediate-ca.key.pem
+crl               = $dir/crl/intermediate-ca.crl.pem
 default_md        = sha256
 name_opt          = ca_default
 cert_opt          = ca_default
 default_days      = 375
 preserve          = no
-policy            = policy_strict
+policy            = policy_loose
 unique_subject    = no
-x509_extensions   = v3_ca
+copy_extensions   = copy
 
-[ policy_strict ]
+[ policy_loose ]
 countryName             = optional
 stateOrProvinceName     = optional
 localityName            = optional
-organizationName        = supplied
+organizationName        = optional
 organizationalUnitName  = optional
 commonName              = supplied
 emailAddress            = optional
@@ -35,20 +35,37 @@ default_bits        = 4096
 distinguished_name  = req_distinguished_name
 string_mask         = utf8only
 default_md          = sha256
-x509_extensions     = v3_ca
 
 [ req_distinguished_name ]
 organizationName    = Organization Name
 commonName          = Common Name
-
-[ v3_ca ]
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints = critical, CA:true
-keyUsage = critical, digitalSignature, cRLSign, keyCertSign
 
 [ v3_intermediate_ca ]
 subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid:always,issuer
 basicConstraints = critical, CA:true, pathlen:0
 keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+
+[ server_cert ]
+basicConstraints = critical, CA:false
+nsCertType = server
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = pki-lab.local
+DNS.2 = localhost
+
+[ client_cert ]
+basicConstraints = critical, CA:false
+nsCertType = client
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = clientAuth
+
+[ crl_ext ]
+authorityKeyIdentifier=keyid:always
